@@ -1,36 +1,6 @@
 package io.github.food.stack.application.payment.complete;
 
-import io.github.food.stack.application.CommandHandler;
-import io.github.food.stack.domain.control.Result;
-import io.github.food.stack.domain.exception.NotFoundException;
-import io.github.food.stack.domain.payment.Payment;
-import io.github.food.stack.domain.payment.PaymentGateway;
-import io.github.food.stack.domain.payment.PaymentID;
+import io.github.food.stack.application.CommandUseCase;
 
-import java.util.Objects;
-
-public class CompletePaymentUseCase implements CommandHandler<CompletePaymentCommand, CompletePaymentOutput> {
-
-    private final PaymentGateway paymentGateway;
-
-    public CompletePaymentUseCase(final PaymentGateway paymentGateway) {
-        this.paymentGateway = Objects.requireNonNull(paymentGateway);
-    }
-
-    @Override
-    public Result<CompletePaymentOutput> handle(final CompletePaymentCommand command) {
-        final var id = PaymentID.from(command.paymentId());
-
-        final var maybePayment = this.paymentGateway.findById(id);
-        if (maybePayment.isEmpty()) {
-            return Result.failure(NotFoundException.with(Payment.class, id));
-        }
-
-        final var payment = maybePayment.get();
-        payment.complete(command.transactionId());
-
-        final var updatedPayment = this.paymentGateway.update(payment);
-
-        return Result.success(CompletePaymentOutput.from(updatedPayment));
-    }
+public interface CompletePaymentUseCase extends CommandUseCase<CompletePaymentCommand, CompletePaymentOutput> {
 }

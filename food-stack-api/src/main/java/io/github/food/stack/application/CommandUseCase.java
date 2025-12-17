@@ -3,7 +3,7 @@ package io.github.food.stack.application;
 import io.github.food.stack.domain.control.Result;
 
 @FunctionalInterface
-public interface QueryHandler<Q, R> {
+public interface CommandUseCase<C, R> {
 
-    Result<R> handle(Q query);
+    Result<R> execute(C command);
 }
